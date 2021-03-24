@@ -66,13 +66,14 @@ export const removeServiceRequest = (id) => ({
   payload: { id },
 });
 
-export const removeServiceFailure = (error) => ({
+export const removeServiceFailure = (id, error) => ({
   type: REMOVE_SERVICE_FAILURE,
-  payload: { error },
+  payload: { id, error },
 });
 
-export const removeServiceSuccess = () => ({
+export const removeServiceSuccess = (id) => ({
   type: REMOVE_SERVICE_SUCCESS,
+  payload: { id },
 });
 
 export const changeServiceField = (name, value) => ({
@@ -121,7 +122,7 @@ export const submitService = async (dispatch, history, item) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(item),
+      body: JSON.stringify(item.id ? item : { ...item, id: 0 }),
     })
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -135,7 +136,7 @@ export const submitService = async (dispatch, history, item) => {
 }
 
 export const removeService = async (dispatch, id) => {
-  dispatch(removeServiceRequest());
+  dispatch(removeServiceRequest(id));
   try {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/${id}`, {
       method: 'DELETE',
@@ -143,9 +144,8 @@ export const removeService = async (dispatch, id) => {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    dispatch(removeServiceSuccess());
+    dispatch(removeServiceSuccess(id));
   } catch (e) {
-    dispatch(removeServiceFailure(e.message));
+    dispatch(removeServiceFailure(id, e.message));
   }
-  fetchServices(dispatch);
 }

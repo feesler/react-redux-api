@@ -23,8 +23,6 @@ function ServiceForm() {
   } = useSelector(state => state.serviceForm);
   const dispatch = useDispatch();
 
-  console.log('[ServiceForm] id: ', id);
-
   useEffect(() => {
     if (id) {
       fetchService(dispatch, id);
@@ -69,7 +67,7 @@ function ServiceForm() {
 
   return (
     <form className="service-form" onSubmit={handleSubmit}>
-      <h2 className="service-form__title">Новый товар</h2>
+      <h2 className="service-form__title">Сервис</h2>
       <div className="form-field">
         <label htmlFor="productFormName" className="form-label">Название</label>
         <input

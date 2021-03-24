@@ -8,16 +8,18 @@ function IconButton(props) {
 
   return (
     <button className={classNames(['icon-btn', className])} {...rest}>
-      <IconComponent />
+      {icon && <IconComponent />}
+      {props.children}
     </button>
   )
 }
 
 IconButton.propTypes = {
-  icon: PropTypes.object.isRequired,
+  icon: PropTypes.object,
   className: PropTypes.string,
 };
 IconButton.defaultProps = {
+  icon: null,
   className: '',
 };
 
