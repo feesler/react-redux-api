@@ -2,7 +2,7 @@ import {
   FETCH_SERVICES_REQUEST,
   FETCH_SERVICES_FAILURE,
   FETCH_SERVICES_SUCCESS,
-  REMOVE_SERVICE,
+  REMOVE_SERVICE_REQUEST,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -19,6 +19,7 @@ export default function serviceListReducer(state = initialState, action) {
         loading: true,
         error: null,
       };
+
     case FETCH_SERVICES_FAILURE:
       const {error} = action.payload;
       return {
@@ -26,6 +27,7 @@ export default function serviceListReducer(state = initialState, action) {
         loading: false,
         error,
       };
+
     case FETCH_SERVICES_SUCCESS:
       const {items} = action.payload;
       return {
@@ -34,11 +36,12 @@ export default function serviceListReducer(state = initialState, action) {
         loading: false,
         error: null,
       };
-    case REMOVE_SERVICE:
-      const {id} = action.payload;
+
+    case REMOVE_SERVICE_REQUEST:
       return {
         ...state,
-        items: state.items.filter(o => o.id !== id)
+        loading: true,
+        error: null,
       };
     default:
       return state;

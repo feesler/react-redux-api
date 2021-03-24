@@ -1,18 +1,25 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { removeService, fetchServices } from '../actions/actionCreators';
 import Spinner from './Spinner';
+import ServiceItem from './ServiceItem';
 
 function ServiceList(props) {
   const { items, loading, error } = useSelector(state => state.serviceList);
   const dispatch = useDispatch();
+  let history = useHistory();
 
   useEffect(() => {
     fetchServices(dispatch);
-  }, [dispatch])
+  }, [dispatch]);
 
-  const handleRemove = id => {
-    dispatch(removeService(id));
+  const handleUpdate = (id) => {
+    history.push(`/services/${id}`);
+  }
+
+  const handleRemove = (id) => {
+    removeService(dispatch, id);
   }
 
   if (loading) {
@@ -20,18 +27,24 @@ function ServiceList(props) {
   }
 
   if (error) {
-    return <p>Something went wrong try again</p>;
+    return (
+      <div className="error-message">Something went wrong try again</div>
+    );
   }
 
   return (
-    <ul>
-      {items.map(o => (
-        <li key={o.id}>
-          {o.name} {o.price}
-          <button onClick={() => handleRemove(o.id)}>✕</button>
-        </li>
-      ))}
-    </ul>
+    <div className="service-list">
+      <ul className="list-group">
+        {items.map((item) => (
+          <ServiceItem
+            key={item.id}
+            {...item}
+            onUpdate={handleUpdate}
+            onDelete={handleRemove}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
 

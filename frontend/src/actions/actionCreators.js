@@ -1,67 +1,106 @@
 import {
   CHANGE_SERVICE_FIELD,
+  INVALIDATE_SERVICE_FIELD,
+  FETCH_SERVICE_REQUEST,
+  FETCH_SERVICE_FAILURE,
+  FETCH_SERVICE_SUCCESS,
   FETCH_SERVICES_REQUEST,
   FETCH_SERVICES_FAILURE,
   FETCH_SERVICES_SUCCESS,
-  ADD_SERVICE_REQUEST,
-  ADD_SERVICE_FAILURE,
-  ADD_SERVICE_SUCCESS,
-  REMOVE_SERVICE,
+  SUBMIT_SERVICE_REQUEST,
+  SUBMIT_SERVICE_FAILURE,
+  SUBMIT_SERVICE_SUCCESS,
+  REMOVE_SERVICE_REQUEST,
+  REMOVE_SERVICE_FAILURE,
+  REMOVE_SERVICE_SUCCESS,
 } from './actionTypes';
+
+export const fetchServiceRequest = () => ({
+  type: FETCH_SERVICE_REQUEST,
+});
+
+export const fetchServiceFailure = (error) => ({
+  type: FETCH_SERVICE_FAILURE,
+  payload: { error },
+});
+
+export const fetchServiceSuccess = (item) => ({
+  type: FETCH_SERVICE_SUCCESS,
+  payload: {
+    item,
+  },
+});
 
 export const fetchServicesRequest = () => ({
   type: FETCH_SERVICES_REQUEST,
 });
 
-export const fetchServicesFailure = error => ({
+export const fetchServicesFailure = (error) => ({
   type: FETCH_SERVICES_FAILURE,
-  payload: {
-    error,
-  },
+  payload: { error },
 });
 
-export const fetchServicesSuccess = items => ({
+export const fetchServicesSuccess = (items) => ({
   type: FETCH_SERVICES_SUCCESS,
   payload: {
     items,
   },
 });
 
-export const addServiceRequest = (name, price) => ({
-  type: ADD_SERVICE_REQUEST,
-  payload: {
-    name,
-    price,
-  },
-})
-
-export const addServiceFailure = error => ({
-  type: ADD_SERVICE_FAILURE,
-  payload: {
-    error,
-  },
+export const submitServiceRequest = (item) => ({
+  type: SUBMIT_SERVICE_REQUEST,
+  payload: { ...item },
 });
 
-export const addServiceSuccess = () => ({
-  type: ADD_SERVICE_SUCCESS,
+export const submitServiceFailure = (error) => ({
+  type: SUBMIT_SERVICE_FAILURE,
+  payload: { error },
+});
+
+export const submitServiceSuccess = () => ({
+  type: SUBMIT_SERVICE_SUCCESS,
+});
+
+export const removeServiceRequest = (id) => ({
+  type: REMOVE_SERVICE_REQUEST,
+  payload: { id },
+});
+
+export const removeServiceFailure = (error) => ({
+  type: REMOVE_SERVICE_FAILURE,
+  payload: { error },
+});
+
+export const removeServiceSuccess = () => ({
+  type: REMOVE_SERVICE_SUCCESS,
 });
 
 export const changeServiceField = (name, value) => ({
   type: CHANGE_SERVICE_FIELD,
-  payload: {
-    name,
-    value,
-  },
+  payload: { name, value },
 });
 
-export const removeService = id => ({
-  type: REMOVE_SERVICE,
-  payload: {
-    id,
-  },
+export const invalidateServiceField = (name) => ({
+  type: INVALIDATE_SERVICE_FIELD,
+  payload: { name },
 });
 
-export const fetchServices = async dispatch => {
+export const fetchService = async (dispatch, id) => {
+  dispatch(fetchServiceRequest());
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/${id}`)
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const data = await response.json();
+    console.log(data);
+    dispatch(fetchServiceSuccess(data));
+  } catch (e) {
+    dispatch(fetchServiceFailure(e.message));
+  }
+}
+
+export const fetchServices = async (dispatch) => {
   dispatch(fetchServicesRequest());
   try {
     const response = await fetch(`${process.env.REACT_APP_API_URL}`)
@@ -76,20 +115,37 @@ export const fetchServices = async dispatch => {
   }
 }
 
-export const addService = async (dispatch, name, price) => {
-  dispatch(addServiceRequest());
+export const submitService = async (dispatch, history, item) => {
+  dispatch(submitServiceRequest());
   try {
     const response = await fetch(`${process.env.REACT_APP_API_URL}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, price }),
+      body: JSON.stringify(item),
     })
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    dispatch(addServiceSuccess());
+    dispatch(submitServiceSuccess());
+
+    history.goBack();
   } catch (e) {
-    dispatch(addServiceFailure(e.message));
+    dispatch(submitServiceFailure(e.message));
+  }
+}
+
+export const removeService = async (dispatch, id) => {
+  dispatch(removeServiceRequest());
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/${id}`, {
+      method: 'DELETE',
+    })
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    dispatch(removeServiceSuccess());
+  } catch (e) {
+    dispatch(removeServiceFailure(e.message));
   }
   fetchServices(dispatch);
 }

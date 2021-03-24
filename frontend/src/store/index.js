@@ -1,10 +1,10 @@
 import { createStore, combineReducers } from "redux";
 import serviceListReducer from '../reducers/serviceList';
-import serviceAddReducer from '../reducers/serviceAdd';
+import serviceFormReducer from '../reducers/serviceForm';
 
 const reducer = combineReducers({
   serviceList: serviceListReducer,
-  serviceAdd: serviceAddReducer,
+  serviceForm: serviceFormReducer,
 });
 
 const store = createStore(
