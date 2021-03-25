@@ -1,4 +1,5 @@
 import {
+  RESET_SERVICE_FORM,
   CHANGE_SERVICE_FIELD,
   INVALIDATE_SERVICE_FIELD,
   FETCH_SERVICE_REQUEST,
@@ -74,6 +75,10 @@ export const removeServiceFailure = (id, error) => ({
 export const removeServiceSuccess = (id) => ({
   type: REMOVE_SERVICE_SUCCESS,
   payload: { id },
+});
+
+export const resetServiceForm = () => ({
+  type: RESET_SERVICE_FORM,
 });
 
 export const changeServiceField = (name, value) => ({
