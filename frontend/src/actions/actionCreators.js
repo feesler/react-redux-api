@@ -27,9 +27,7 @@ export const fetchServiceFailure = (error) => ({
 
 export const fetchServiceSuccess = (item) => ({
   type: FETCH_SERVICE_SUCCESS,
-  payload: {
-    item,
-  },
+  payload: { item },
 });
 
 export const fetchServicesRequest = () => ({
@@ -43,9 +41,7 @@ export const fetchServicesFailure = (error) => ({
 
 export const fetchServicesSuccess = (items) => ({
   type: FETCH_SERVICES_SUCCESS,
-  payload: {
-    items,
-  },
+  payload: { items },
 });
 
 export const submitServiceRequest = (item) => ({
