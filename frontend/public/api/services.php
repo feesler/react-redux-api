@@ -53,7 +53,8 @@ if ($isPOST) {
     }
 } else if ($isDELETE) {
     $route = $_GET["route"];
-    $itemId = intval($route);
+    $routeParts = explode("/", $route);
+    $itemId = intval($routeParts[1] ?? 0);
 
     $res = [];
     foreach ($services as $item) {
